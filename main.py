@@ -34,7 +34,7 @@ resource_fields = {
 
 # db.create_all() # Eugene
 
-class Video(Resource):
+class Person(Resource):
     # @marshal_with(resource_fields)
     def get(self, person_id):
         result = People[person_id]

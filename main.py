@@ -39,7 +39,7 @@ class Person(Resource):
     def get(self, person_id):
         result = People[person_id]
         if not result:
-            abort(404, message="Video not found")
+            abort(404, message="Person not found")
         return result
     
     # @marshal_with(resource_fields)
@@ -47,7 +47,7 @@ class Person(Resource):
         args = person_put_args.parse_args()
         result = People[person_id]
         if result:
-            abort(409, message="Video ID taken")
+            abort(409, message="Person ID taken")
         People[person_id] = args
         
         return People[person_id], 201

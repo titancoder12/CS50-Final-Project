@@ -37,18 +37,12 @@ resource_fields = {
 class Person(Resource):
     # @marshal_with(resource_fields)
     def get(self, person_id):
-        result = People[person_id]
-        if not result:
-            abort(404, message="Person not found")
-        return result
+        return People[person_id]
     
     # @marshal_with(resource_fields)
     def put(self, person_id):
         args = person_put_args.parse_args()
-        result = People[person_id]
-        if result:
-            abort(409, message="Person ID taken")
-        People[person_id] = args
+        People.append(args)
         
         return People[person_id], 201
     

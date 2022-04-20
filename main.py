@@ -14,57 +14,64 @@ api = Api(app)
 
 #     def __repr__(self):
 #         return f"Video(name = {self.name}, views = {self.views}, likes = {self.likes})"
-People = [{"name":"Joe", "age":"30", "id": 0},
-          {"name":"Bob", "age":"15", "id": 1},
-          {"name":"Alice", "age":"10", "id": 2}]
+People = [{"firstName":"Joe", "lastName":"Lee", "age":30, "role":"player", "team_id":1, "id": 0},
+          {"firstName":"Bob", "lastName":"Lao", "age":35, "role":"coach", "team_id":1, "id": 1},
+          {"firstName":"Foo", "lastName":"Lin", "age":10, "role":"player", "team_id":1, "id": 2}]
+
+Teams = [{"name":"ND Athletics", "id": 1}]
 
 person_put_args = reqparse.RequestParser()
 person_put_args.add_argument("name", type=str, help="Name of person is required", required=True)
 person_put_args.add_argument("age", type=int, help="Age of person is required", required=True)
 
-video_update_args = reqparse.RequestParser()
-video_update_args.add_argument("name", type=str, help="Name of person is required")
-video_update_args.add_argument("age", type=int, help="Age of person is required")
+# STILL NEED TO ADD MORE RESOURCES FOR PEOPLE
+# people_resource_fields = {
+#     'id': fields.Integer,
+#     'name': fields.String,
+#     'age': fields.Integer
 
-resource_fields = {
-    'id': fields.Integer,
-    'name': fields.String,
-    'age': fields.Integer
-}
+# }
 
 # db.create_all() # Eugene
 
 class Person(Resource):
+
     # @marshal_with(resource_fields)
     def get(self, person_id):
         return People[person_id]
     
     # @marshal_with(resource_fields)
-    def put(self, person_id):
+    def put(self):
         args = person_put_args.parse_args()
+        args["id"] = len(People)
         People.append(args)
         
-        return People[person_id], 201
+        
+        return args, 201
+    
+class Team(Resource):
+
+    # @marshal_with(resource_fields)
+    def get(self, team_id):
+        team_people = {}
+        for person in People:
+            if person["team_id"] == team_id:
+                team_people[person["firstName"]+" "+person["lastName"]] = person["role"]
+        return team_people
     
     # @marshal_with(resource_fields)
-    # def patch(self, video_id):
-    #     args = video_update_args.parse_args()
-    #     result = VideoModel.query.filter_by(id=video_id).first()
-    #     if not result:
-    #         abort(404, message="Video doesn't exist")
-    #     if args['name']:
-    #         result.name = args['name']
-    #     if args['views']:
-    #         result.views = args['views']
-    #     if args['likes']:
-    #         result.likes = args['likes']
+    def put(self):
+        args = person_put_args.parse_args()
+        args["id"] = len(People)
+        People.append(args)
+        print(People)
         
-        #db.session.commit()
+        return People, 201
 
-        # return result
+api.add_resource(Person, "/person","/person/", "/person/<int:person_id>")
+api.add_resource(Team, "/team", "/team/", "/team/<int:team_id>")
 
-        
-api.add_resource(Person, "/person/<int:person_id>")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

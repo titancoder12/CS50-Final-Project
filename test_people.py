@@ -12,10 +12,7 @@ while(True):
     role = input("Role of person: ")
 
     response = requests.put(BASE + "person/", {"firstName":first_name, "lastName":last_name, "role":role, "team_id":1, "age":age})
-    input = input("Person added. Do you want to add more people? (y/n)")
-    print()
-    if input == "n":
-        break
+    print(response.json())
 
 # Add a person:
 # curl -X PUT -d name=bar -d age=1 http://localhost:5000/person/

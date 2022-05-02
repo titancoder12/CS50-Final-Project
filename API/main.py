@@ -56,8 +56,12 @@ team_resource_fields = {
 class Person(Resource):
 
     # @marshal_with(people_resource_fields)
-    def get(self, person_id):
-        return People[person_id]
+    def get(self, firstName, lastName):
+        for i in range(len(People)):
+            if People[i][firstName] == firstName:
+                if People[i][lastName] == lastName:
+                    return People[i]
+        return {"error": 404}
     
     # @marshal_with(people_resource_fields)
     def put(self):
@@ -97,7 +101,7 @@ class Team(Resource):
             Teams[team_id]["name"] = args["name"]
         return Teams[team_id]
         
-api.add_resource(Person, "/person","/person/", "/person/<int:person_id>")
+api.add_resource(Person, "/person","/person/", "/person/<int:person_id>", "/person/<str:firstName>_<str:lastName>")
 api.add_resource(Team, "/team", "/team/", "/team/<int:team_id>")
 
 

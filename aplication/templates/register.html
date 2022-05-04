@@ -1,17 +1,23 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Log In
+    Register
 {% endblock %}
 
 {% block main %}
-    <form action="/login" method="post">
+    <form action="/register" method="post">
         <div class="mb-3">
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="firstname" name="firstname" placeholder="Firstname" type="text">
         </div>
         <div class="mb-3">
             <input class="form-control mx-auto w-auto" id="lastname" name="lastname" placeholder="Lastname" type="text">
         </div>
-        <button class="btn btn-primary" type="submit">Log In</button>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="role" name="role" placeholder="Role (Player, Coach, Manager, etc...)" type="text">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="age" name="age" placeholder="Age" type="number">
+        </div>
+        <button class="btn btn-primary" type="submit">Register</button>
     </form>
 {% endblock %}

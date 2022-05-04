@@ -1,6 +1,7 @@
 import os
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
+import requests
 
 # Configure application
 app = Flask(__name__)
@@ -23,6 +24,10 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+@app.route("/")
+def home():
+    return redirect("/login")
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     # Forget any user_id
@@ -39,16 +44,19 @@ def login():
         
         firstname = request.form.get("firstname")
         lastname = request.form.get("lastname")
-        request = request.get(BASE + "person/" + firstname + "_" + lastname)
-        if request == {"error": 404}:
+        api_call = requests.get(BASE + "person/" + firstname + "_" + lastname).json()
+        if api_call == {"error": 404}:
             return render_template("apology.html", message="Person not found")
 
+        person_id = int(api_call["id"])
 
         # Remember which user has logged in
-        session["person_id"] = request["person_id"]
+        session["person_id"] = person_id
 
         # Redirect user to home page
         return redirect("/")
+    else:
+        return render_template("login.html")
 
 @app.route("/logout")
 def logout():
@@ -63,18 +71,21 @@ def register():
             return render_template("apology.html", message="First name is required")
         elif not request.form.get("lastname"):
             return render_template("apology.html", message="Last name is required")
+        elif not request.form.get("role"):
+            return render_template("apology.html", message="Role is required")
+        elif not request.form.get("age"):
+            return render_template("apology.html", message="Age is required")
         
         firstname = request.form.get("firstname")
         lastname = request.form.get("lastname")
-        request = request.put(BASE + "person/", {"firstname": firstname, "lastname": lastname, "role": role, })
-        if request == {"error": 404}:
-            return render_template("apology.html", message="Person not found")
+        role = request.form.get("role")
+        age = request.form.get("age")
+        requests.put(BASE + "person/", {"firstname": firstname, "lastname": lastname, "role": role, "age": age})
+        return redirect("/login")
+    else:
+        return render_template("register.html")
 
 
-        # Remember which user has logged in
-        session["person_id"] = request["person_id"]
-
-        # Redirect user to home page
-        return redirect("/")
-
+#if __name__ == '__main__':
+#    app.run(host = "localhost", port=5012, debug=True)
 

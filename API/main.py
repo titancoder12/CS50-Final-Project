@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_restful import Api, Resource, marshal, reqparse, abort, fields, marshal_with
-from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 api = Api(app)
 # test comment
@@ -25,7 +24,7 @@ person_put_args.add_argument("lastname", type=int, help="Last name of person is 
 person_put_args.add_argument("age", type=int, help="Age of person is required", required=True)
 person_put_args.add_argument("role", type=int, help="Role of person is required", required=True)
 
-person_update_args = reqparse.RerquestParser()
+person_update_args = reqparse.RequestParser()
 person_update_args.add_argument("team_id", type=int)
 
 people_resource_fields = {
@@ -56,11 +55,13 @@ team_resource_fields = {
 class Person(Resource):
 
     # @marshal_with(people_resource_fields)
-    def get(self, firstName, lastName):
+    def get(self, firstname, lastname):
         for i in range(len(People)):
-            if People[i][firstName] == firstName:
-                if People[i][lastName] == lastName:
+            if People[i]["firstname"] == firstname:
+                if People[i]["lastname"] == lastname:
+                    print(People)
                     return People[i]
+        print(People)
         return {"error": 404}
     
     # @marshal_with(people_resource_fields)
@@ -68,6 +69,7 @@ class Person(Resource):
         args = person_put_args.parse_args()
         args["id"] = len(People)
         People.append(args)
+        print(People)
         return args, 201
     
     def patch(self, person_id):
@@ -101,7 +103,7 @@ class Team(Resource):
             Teams[team_id]["name"] = args["name"]
         return Teams[team_id]
         
-api.add_resource(Person, "/person","/person/", "/person/<int:person_id>", "/person/<str:firstName>_<str:lastName>")
+api.add_resource(Person, "/person","/person/", "/person/<int:person_id>", "/person/<string:firstname>_<string:lastname>")
 api.add_resource(Team, "/team", "/team/", "/team/<int:team_id>")
 
 

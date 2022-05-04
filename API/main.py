@@ -15,13 +15,13 @@ api = Api(app)
 
 #     def __repr__(self):
 #         return f"Video(name = {self.name}, views = {self.views}, likes = {self.likes})"
-People = [{"firstName":"Joe", "lastName":"Lee", "age":30, "role":"player", "team_id":1, "id": 0},
-          {"firstName":"Bob", "lastName":"Lao", "age":35, "role":"coach", "team_id":1, "id": 1},
-          {"firstName":"Foo", "lastName":"Lin", "age":10, "role":"player", "team_id":1, "id": 2}]
+People = [{"firstname":"Joe", "lastname":"Lee", "age":30, "role":"player", "team_id":1, "id": 0},
+          {"firstname":"Bob", "lastname":"Lao", "age":35, "role":"coach", "team_id":1, "id": 1},
+          {"firstname":"Foo", "lastname":"Lin", "age":10, "role":"player", "team_id":1, "id": 2}]
 
 person_put_args = reqparse.RequestParser()
-person_put_args.add_argument("firstName", type=str, help="First name of person is required", required=True)
-person_put_args.add_argument("lastName", type=int, help="Last name of person is required", required=True)
+person_put_args.add_argument("firstname", type=str, help="First name of person is required", required=True)
+person_put_args.add_argument("lastname", type=int, help="Last name of person is required", required=True)
 person_put_args.add_argument("age", type=int, help="Age of person is required", required=True)
 person_put_args.add_argument("role", type=int, help="Role of person is required", required=True)
 
@@ -31,8 +31,8 @@ person_update_args.add_argument("team_id", type=int)
 people_resource_fields = {
     'id': fields.Integer,
     'team_id': fields.Integer,
-    'firstName': fields.String,
-    'lastName': fields.String,
+    'firstname': fields.String,
+    'lastname': fields.String,
     'age': fields.Integer,
     'role': fields.String,
 }
@@ -84,7 +84,7 @@ class Team(Resource):
         team_people = {}
         for person in People:
             if person["team_id"] == team_id:
-                team_people[person["firstName"]+" "+person["lastName"]] = person["role"]
+                team_people[person["firstname"]+" "+person["lastname"]] = person["role"]
         return team_people
     
     # @marshal_with(team_resource_fields)

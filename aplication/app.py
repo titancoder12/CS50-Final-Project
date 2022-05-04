@@ -1,8 +1,6 @@
 import os
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
-from tempfile import mkdtemp
-from werkzeug.security import check_password_hash, generate_password_hash
 
 # Configure application
 app = Flask(__name__)
@@ -41,12 +39,42 @@ def login():
         
         firstname = request.form.get("firstname")
         lastname = request.form.get("lastname")
-        if request.get(BASE + "person/" + firstname + lastname) == {"error": 404}:
+        request = request.get(BASE + "person/" + firstname + "_" + lastname)
+        if request == {"error": 404}:
             return render_template("apology.html", message="Person not found")
 
 
         # Remember which user has logged in
-        session["person_id"] = rows[0]["id"]
+        session["person_id"] = request["person_id"]
 
         # Redirect user to home page
         return redirect("/")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    session.clear()
+    if request.method == "POST":
+        if not request.form.get("firstname"):
+            return render_template("apology.html", message="First name is required")
+        elif not request.form.get("lastname"):
+            return render_template("apology.html", message="Last name is required")
+        
+        firstname = request.form.get("firstname")
+        lastname = request.form.get("lastname")
+        request = request.put(BASE + "person/", {"firstname": firstname, "lastname": lastname, "role": role, })
+        if request == {"error": 404}:
+            return render_template("apology.html", message="Person not found")
+
+
+        # Remember which user has logged in
+        session["person_id"] = request["person_id"]
+
+        # Redirect user to home page
+        return redirect("/")
+
+

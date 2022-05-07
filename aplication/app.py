@@ -44,7 +44,7 @@ def login():
         
         firstname = request.form.get("firstname")
         lastname = request.form.get("lastname")
-        api_call = requests.get(BASE + "person/" + firstname + "_" + lastname).json()
+        api_call = requests.get(BASE + "person/" + str(firstname) + "_" + str(lastname)).json()
         if api_call == {"error": 404}:
             return render_template("apology.html", message="Person not found")
 
@@ -80,7 +80,7 @@ def register():
         lastname = request.form.get("lastname")
         role = request.form.get("role")
         age = request.form.get("age")
-        requests.put(BASE + "person/", {"firstname": firstname, "lastname": lastname, "role": role, "age": age})
+        requests.put(BASE + "person/", {"firstname": firstname, "lastname": lastname, "age": age, "role": role})
         return redirect("/login")
     else:
         return render_template("register.html")

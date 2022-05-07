@@ -1,5 +1,8 @@
+import flask.scaffold
+flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 from flask import Flask
-from flask_restful import Api, Resource, marshal, reqparse, abort, fields, marshal_with
+from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
+
 app = Flask(__name__)
 api = Api(app)
 # test comment
@@ -25,6 +28,10 @@ person_put_args.add_argument("age", type=int, help="Age of person is required", 
 person_put_args.add_argument("role", type=int, help="Role of person is required", required=True)
 
 person_update_args = reqparse.RequestParser()
+person_update_args.add_argument("firstname", type=int)
+person_update_args.add_argument("lastname", type=int)
+person_update_args.add_argument("age", type=int)
+person_update_args.add_argument("role", type=int)
 person_update_args.add_argument("team_id", type=int)
 
 people_resource_fields = {
@@ -59,7 +66,6 @@ class Person(Resource):
         for i in range(len(People)):
             if People[i]["firstname"] == firstname:
                 if People[i]["lastname"] == lastname:
-                    print(People)
                     return People[i]
         print(People)
         return {"error": 404}
@@ -69,14 +75,24 @@ class Person(Resource):
         args = person_put_args.parse_args()
         args["id"] = len(People)
         People.append(args)
+        print(args)
         print(People)
         return args, 201
     
     def patch(self, person_id):
         args = person_update_args.parse_args()
+        if args["firstname"] in args:
+            People[person_id]["firstname"] = args["firstname"]
+        if args["lastname"] in args:
+            People[person_id]["lastname"] = args["lastname"]
+        if args["role"] in args:
+            People[person_id]["role"] = args["role"]
+        if args["age"] in args:
+            People[person_id]["age"] = args["age"]
         if args["team_id"] in args:
             People[person_id]["team_id"] = args["team_id"]
         return People[person_id]
+
 
     
 class Team(Resource):

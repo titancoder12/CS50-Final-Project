@@ -5,13 +5,14 @@ BASE = "http://localhost:5000/"
 
 print("To start adding people to the database, press enter.")
 input()
+first_name, last_name, age, role = "", "", "", ""
 while(True):
     first_name = input("First name of person: ")
     last_name = input("Last name of person: ")
     age = atoi(input("Age of person: "))
     role = input("Role of person: ")
 
-    response = requests.put(BASE + "person/", {"firstName":first_name, "lastName":last_name, "role":role, "team_id":1, "age":age})
+    response = requests.put(BASE + "person/", {"firstname":first_name, "lastname":last_name, "role":role, "team_id":1, "age":age})
     print(response.json())
 
 # Add a person:

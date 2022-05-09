@@ -26,7 +26,7 @@ def after_request(response):
 
 @app.route("/")
 def home():
-    return redirect("/login")
+    return render_template("home.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -71,21 +71,16 @@ def register():
             return render_template("apology.html", message="First name is required")
         elif not request.form.get("lastname"):
             return render_template("apology.html", message="Last name is required")
-        elif not request.form.get("role"):
-            return render_template("apology.html", message="Role is required")
         elif not request.form.get("age"):
             return render_template("apology.html", message="Age is required")
+        elif not request.form.get("role"):
+            return render_template("apology.html", message="Role is required")
         
         firstname = request.form.get("firstname")
         lastname = request.form.get("lastname")
-        role = request.form.get("role")
         age = request.form.get("age")
+        role = request.form.get("role")
         requests.put(BASE + "person/", {"firstname": firstname, "lastname": lastname, "age": age, "role": role})
         return redirect("/login")
     else:
         return render_template("register.html")
-
-
-#if __name__ == '__main__':
-#    app.run(host = "localhost", port=5012, debug=True)
-

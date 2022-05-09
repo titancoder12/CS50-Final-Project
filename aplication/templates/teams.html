@@ -5,8 +5,30 @@
 {% endblock %}
 
 {% block main %}
+<div class="section">
+
+    <h2>Teams</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for person in people %}
+                <tr>
+                    <td>{{ person.name }}</td>
+                    <td>{{ person.role }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <form action="/teams" method="post">
+    <label>Create Team</label>
     <div class="mb-3">
         <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="name" name="name" placeholder="Team name" type="text">
     </div>

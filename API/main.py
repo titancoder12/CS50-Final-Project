@@ -1,10 +1,9 @@
-import flask.scaffold
-flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
 from flask import Flask
-from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
-
+from flask_sqlalchemy import SQLAlchemy
+from flask_restful import Api, Resource, reqparse, fields
 app = Flask(__name__)
 api = Api(app)
+
 # test comment
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 #db = SQLAlchemy(app)
@@ -23,15 +22,16 @@ People = [{"firstname":"Joe", "lastname":"Lee", "age":30, "role":"player", "team
 
 person_put_args = reqparse.RequestParser()
 person_put_args.add_argument("firstname", type=str, help="First name of person is required", required=True)
-person_put_args.add_argument("lastname", type=int, help="Last name of person is required", required=True)
+person_put_args.add_argument("lastname", type=str, help="Last name of person is required", required=True)
 person_put_args.add_argument("age", type=int, help="Age of person is required", required=True)
-person_put_args.add_argument("role", type=int, help="Role of person is required", required=True)
+person_put_args.add_argument("role", type=str, help="Role of person is required", required=True)
+person_put_args.add_argument("team_id", type=int, required=False)
 
 person_update_args = reqparse.RequestParser()
-person_update_args.add_argument("firstname", type=int)
-person_update_args.add_argument("lastname", type=int)
+person_update_args.add_argument("firstname", type=str)
+person_update_args.add_argument("lastname", type=str)
 person_update_args.add_argument("age", type=int)
-person_update_args.add_argument("role", type=int)
+person_update_args.add_argument("role", type=str)
 person_update_args.add_argument("team_id", type=int)
 
 people_resource_fields = {
@@ -73,9 +73,11 @@ class Person(Resource):
     # @marshal_with(people_resource_fields)
     def put(self):
         args = person_put_args.parse_args()
+        args["team_id"] = 0
         args["id"] = len(People)
-        People.append(args)
-        print(args)
+        args_copy = args.copy()
+        print(args_copy)
+        People.append(args_copy)
         print(People)
         return args, 201
     

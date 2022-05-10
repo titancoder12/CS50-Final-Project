@@ -1,37 +1,39 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Apology
+    Teams
 {% endblock %}
 
 {% block main %}
 <div class="section">
 
-    <h2>Teams</h2>
-    <table>
+    <h2>{{ name }}</h2>
+    <table class="table tablestriped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Role</th>
+                <th text-start>Name</th>
+                <th text-start>Role</th>
             </tr>
         </thead>
 
         <tbody>
             {% for person in people %}
                 <tr>
-                    <td>{{ person.name }}</td>
-                    <td>{{ person.role }}</td>
+                    <td text-start>{{ person }}</td>
+                    <td text-start>{{ people[person] }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+<br>
+<hr>
 
 <form action="/teams" method="post">
     <label>Create Team</label>
     <div class="mb-3">
         <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="name" name="name" placeholder="Team name" type="text">
     </div>
-    <button class="btn btn-primary" type="submit">Register</button>
+    <button class="btn btn-primary" type="submit">Create Team</button>
 </form>
 {% endblock %}

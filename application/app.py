@@ -44,14 +44,16 @@ def login():
         
         firstname = request.form.get("firstname")
         lastname = request.form.get("lastname")
-        api_call = requests.get(BASE + "person/" + str(firstname) + "_" + str(lastname)).json()
-        if api_call == {"error": 404}:
+        response = requests.get(BASE + "person/" + str(firstname) + "_" + str(lastname)).json()
+        if response == {"error": 404}:
             return render_template("apology.html", message="Person not found")
 
-        person_id = int(api_call["id"])
+        person_id = int(response["id"])
 
         # Remember which user has logged in
         session["person_id"] = person_id
+        session["firstname"] = firstname
+        session["lastname"] = lastname
 
         # Redirect user to home page
         return redirect("/")
@@ -80,7 +82,33 @@ def register():
         lastname = request.form.get("lastname")
         age = request.form.get("age")
         role = request.form.get("role")
-        requests.put(BASE + "person/", {"firstname": firstname, "lastname": lastname, "age": age, "role": role})
-        return redirect("/login")
+        response = requests.put(BASE + "person/", {"firstname": firstname, "lastname": lastname, "age": age, "role": role, "team_id": 0}).json()
+        session["person_id"] = response["id"]
+        session["firstname"] = firstname
+        session["lastname"] = lastname
+        return redirect("/")
     else:
         return render_template("register.html")
+
+@app.route("/teams", methods=["GET", "POST"])
+def teams():
+    if request.method == "POST":
+        name = request.form.get("name")
+        requests.get(BASE + "team/", {"name": name})
+    else:
+        firstname = session["firstname"]
+        lastname = session["lastname"]
+        response = requests.get(BASE + "person/" + firstname + "_" + lastname).json()
+        #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + str(response["team_id"]))
+        #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        team_id = str(response["team_id"])
+        if team_id != {}:
+            return render_template("teams.html", team={}, name="Teams")
+        team = requests.get(BASE + "team/" + team_id).json()
+        name = team["name"]
+        value = team.pop("name")
+        print(value)
+        people = team.copy()
+        return render_template("teams.html", people=people, name=name)
+        
+        

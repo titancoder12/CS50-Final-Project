@@ -44,7 +44,7 @@ people_resource_fields = {
 }
 
 
-Teams = [{"name":"ND Athletics", "id": 0}]
+Teams = [{}, {"name":"ND Athletics", "id": 1}]
 
 team_put_args = reqparse.RequestParser()
 team_put_args.add_argument("name", type=str, help="Name of team is required", required=True)
@@ -64,10 +64,9 @@ class Person(Resource):
     # @marshal_with(people_resource_fields)
     def get(self, firstname, lastname):
         for i in range(len(People)):
-            if People[i]["firstname"] == firstname:
-                if People[i]["lastname"] == lastname:
-                    return People[i]
-        print(People)
+            if (People[i]["firstname"] == firstname) and (People[i]["lastname"] == lastname):
+                return People[i]
+        print(People[i])
         return {"error": 404}
     
     # @marshal_with(people_resource_fields)
@@ -101,19 +100,22 @@ class Team(Resource):
 
     # @marshal_with(team_resource_fields)
     def get(self, team_id):
-        team_people = {}
+        team = {}
+        team["name"] = Teams[team_id]
+        print(Teams[team_id]["name"])
         for person in People:
             if person["team_id"] == team_id:
-                team_people[person["firstname"]+" "+person["lastname"]] = person["role"]
-        return team_people
+                team[person["firstname"]+" "+person["lastname"]] = person["role"]
+        return team
     
     # @marshal_with(team_resource_fields)
     def put(self):
         args = team_put_args.parse_args()
         args["id"] = len(Teams)
-        Teams.append(args)
-        print(People)
-        return People, 201
+        args_copy = args.copy()
+        Teams.append(args_copy)
+        print(Teams)
+        return Teams, 201
 
     def patch(self, team_id):
         args = team_update_args.parse_args()

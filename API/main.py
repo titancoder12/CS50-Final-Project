@@ -101,7 +101,7 @@ class Team(Resource):
     # @marshal_with(team_resource_fields)
     def get(self, team_id):
         team = {}
-        team["name"] = Teams[team_id]
+        team["name"] = Teams[team_id]["name"]
         print(Teams[team_id]["name"])
         for person in People:
             if person["team_id"] == team_id:
@@ -115,7 +115,7 @@ class Team(Resource):
         args_copy = args.copy()
         Teams.append(args_copy)
         print(Teams)
-        return Teams, 201
+        return args["id"]
 
     def patch(self, team_id):
         args = team_update_args.parse_args()

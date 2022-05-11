@@ -92,23 +92,32 @@ def register():
 
 @app.route("/teams", methods=["GET", "POST"])
 def teams():
+    team_id = 0
     if request.method == "POST":
         name = request.form.get("name")
-        requests.get(BASE + "team/", {"name": name})
+        team_id = requests.put(BASE + "team/", {"name": name})#team_id = requests.put(BASE + "team/", {"name": name})
+        requests.patch(BASE + "person/" + str(session["person_id"]), {"team_id": team_id})
+        return redirect('/teams')
     else:
         firstname = session["firstname"]
         lastname = session["lastname"]
-        response = requests.get(BASE + "person/" + firstname + "_" + lastname).json()
-        #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + str(response["team_id"]))
-        #print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        url = BASE + "person/" + firstname + "_" + lastname
+        print(f"Trying to do GET to {url}")
+        response = requests.get(url).json()
+        #team_id = response["team_id"]
+        #if int(team_id) == 0:
+        print(f"The resone is: {str(response)} ")
         team_id = str(response["team_id"])
-        if team_id != {}:
-            return render_template("teams.html", team={}, name="Teams")
         team = requests.get(BASE + "team/" + team_id).json()
         name = team["name"]
         value = team.pop("name")
         print(value)
         people = team.copy()
-        return render_template("teams.html", people=people, name=name)
+        return render_template("teams.html", people=people, name=name, team_id=team_id)
         
-        
+@app.route("/account", methods=["GET", "POST"])
+def account():
+    if request.method == "POST":
+        return render_template("account.html", firstname="Christopher")
+    else:
+        return render_template("account.html", firstname="Christopher")

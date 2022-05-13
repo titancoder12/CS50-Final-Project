@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Account
+{% endblock %}
+
+{% block main %}
+<form action="/account" method="post">
+    <label for="fname">First name:</label><br>
+    <div class="mb-3">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="firstname" name="firstname" value={{ firstname }} type="text">
+    </div>
+    <label for="lname">Last name:</label><br>
+    <div class="mb-3">
+        <input autocomplete="off" class="form-control mx-auto w-auto" id="lastname" name="lastname" value={{ lastname }} type="text">
+    </div>
+    <label for="role">Role:</label><br>
+    <div class="mb-3">
+        <input autocomplete="off" class="form-control mx-auto w-auto" id="role" name="role" value={{ role }} type="text">
+    </div>
+    <label for="age">Age:</label><br>
+    <div class="mb-3">
+        <input autocomplete="off" class="form-control mx-auto w-auto" id="age" name="age" value={{ age }} type="number">
+    </div>
+    <label for="teamid">Team id:</label><br>
+    <div class="mb-3">
+        <input autocomplete="off" class="form-control mx-auto w-auto" id="team_id" name="team_id" value={{ team_id }} type="number">
+    </div>
+    <button  class="btn btn-primary" type="submit">Update</button>
+</form>
+{% endblock %}

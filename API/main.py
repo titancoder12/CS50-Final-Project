@@ -82,17 +82,18 @@ class Person(Resource):
     
     def patch(self, person_id):
         args = person_update_args.parse_args()
-        if args["firstname"] in args:
+        if args["firstname"]:
             People[person_id]["firstname"] = args["firstname"]
-        if args["lastname"] in args:
+        if args["lastname"]:
             People[person_id]["lastname"] = args["lastname"]
-        if args["role"] in args:
+        if args["role"]:
             People[person_id]["role"] = args["role"]
-        if args["age"] in args:
+        if args["age"]:
             People[person_id]["age"] = args["age"]
-        if args["team_id"] in args:
+        if args["team_id"]:
             People[person_id]["team_id"] = args["team_id"]
-        return People[person_id]
+        print(args["role"])
+        print(People[person_id]["role"])
 
 
     
@@ -101,8 +102,10 @@ class Team(Resource):
     # @marshal_with(team_resource_fields)
     def get(self, team_id):
         team = {}
+        if len(Teams) < int(team_id):
+            return {"message": 404}
         team["name"] = Teams[team_id]["name"]
-        print(Teams[team_id]["name"])
+        team["id"] = Teams[team_id]["id"]
         for person in People:
             if person["team_id"] == team_id:
                 team[person["firstname"]+" "+person["lastname"]] = person["role"]
@@ -115,11 +118,11 @@ class Team(Resource):
         args_copy = args.copy()
         Teams.append(args_copy)
         print(Teams)
-        return args["id"]
+        return len(Teams)-1
 
     def patch(self, team_id):
         args = team_update_args.parse_args()
-        if args["name"] in args:
+        if args["name"]:
             Teams[team_id]["name"] = args["name"]
         return Teams[team_id]
         
